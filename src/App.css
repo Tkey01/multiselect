@@ -1,38 +1,82 @@
-.App {
-  text-align: center;
+*, *:before, *:after {
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.multiselect-container {
+  width: 400px;
+  outline: 1px solid #5f6caf;
+  margin: 100px auto;
+  padding: 10px 20px;
+  position: relative;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.top {
+  z-index: 2;
 }
 
-.App-link {
-  color: #61dafb;
+.bottom {
+  z-index: 1;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.selected-options span {
+  display: inline-block;
+  border: 1px solid #0f4c75;
+  background-color: #3282b8;
+  padding: 6px 25px 6px 6px;
+  margin: 2px 5px;
+  border-radius: 5px;
+  color: #fff;
+  position: relative;
+}
+
+.selected-options span button {
+  position: absolute;
+  right: 0px;
+  top: 7px;
+  background: #3282b8;
+  border: none;
+  cursor: pointer;
+  color: #a2c3da;
+}
+
+.selected-options span button:hover {
+  color: #fff;
+}
+
+.filtered-options {
+  display: block;
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: -200px;
+  height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #333;
+}
+
+.filtered-options span {
+  display: block;
+  padding: 5px;
+  border-bottom: 1px solid #cee6f7;
+  background-color: #fff;
+  color: #333;
+}
+
+.filtered-options span.highlight {
+  background: #3282b8;
+  color: #fff;
+}
+
+.input {
+  height: 30px;
+  min-width: 20px;
+  text-indent: 10px;
+  margin-top: 5px;
+  margin-left: 5px;
 }
