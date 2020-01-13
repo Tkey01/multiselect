@@ -41,7 +41,7 @@ export class Multiselect extends React.Component {
     }, this.getNewFilteredOptions);
   }
 
-  toggleOptionsList() {
+  toggleOptionsList(event) {
     this.setState({
       isOptionsListOpen: !this.state.isOptionsListOpen,
       highlightOptionIndex: 0,
@@ -146,7 +146,8 @@ export class Multiselect extends React.Component {
     }
   }
 
-  selectOption(option, optionIndex) {
+  selectOption(event, option, optionIndex) {
+    event.preventDefault();
     const { filteredOptions, selectedOptions } = this.state;
 
     const newFilteredOptions = [...filteredOptions];
@@ -251,7 +252,7 @@ export class Multiselect extends React.Component {
         {filteredOptions.map((option, index) => (
           <span
             key={option.id}
-            onMouseDown={() => this.selectOption(option, index)}
+            onMouseDown={(event) => this.selectOption(event, option, index)}
             className={highlightOptionIndex === index ? 'highlight' : null}
             onMouseOver={() => this.onMouseOverOption(index)}
           >{option.name}</span>
