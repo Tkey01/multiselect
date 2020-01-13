@@ -149,6 +149,8 @@ export class Multiselect extends React.Component {
   selectOption(option, optionIndex, event) {
     if (event && typeof event.preventDefault === 'function') {
       event.preventDefault();
+      console.log('preventDefault');
+      
     }
     const { filteredOptions, selectedOptions } = this.state;
 
@@ -254,7 +256,7 @@ export class Multiselect extends React.Component {
         {filteredOptions.map((option, index) => (
           <span
             key={option.id}
-            onMouseDown={(event) => this.selectOption(event, option, index)}
+            onMouseDown={(event) => this.selectOption(option, index, event)}
             className={highlightOptionIndex === index ? 'highlight' : null}
             onMouseOver={() => this.onMouseOverOption(index)}
           >{option.name}</span>
