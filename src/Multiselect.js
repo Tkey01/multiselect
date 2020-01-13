@@ -146,8 +146,10 @@ export class Multiselect extends React.Component {
     }
   }
 
-  selectOption(event, option, optionIndex) {
-    event.preventDefault();
+  selectOption(option, optionIndex, event) {
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
     const { filteredOptions, selectedOptions } = this.state;
 
     const newFilteredOptions = [...filteredOptions];
