@@ -32,6 +32,7 @@ export class Multiselect extends React.Component {
     this.scrollManaging = this.scrollManaging.bind(this);
     this.scrollAtOption = this.scrollAtOption.bind(this);
     this.onMouseOverOption = this.onMouseOverOption.bind(this);
+    this.onClickSelectedOptions = this.onClickSelectedOptions.bind(this);
   }
 
   onInputChange() {
@@ -207,11 +208,18 @@ export class Multiselect extends React.Component {
     })
   }
 
+  onClickSelectedOptions() {
+    this.inputRef.current.focus();
+  }
+
   renderSelectedOptions() {
     const { selectedOptions } = this.state;
 
     return (
-      <div className="selected-options">
+      <div
+        className="selected-options"
+        onClick={this.onClickSelectedOptions}
+      >
         {selectedOptions.map((option, index) => (
           <span key={option.id}>
             {option.name}
@@ -222,7 +230,7 @@ export class Multiselect extends React.Component {
           type="text"
           onChange={this.onInputChange}
           onFocus={this.toggleOptionsList}
-          onBlur={() => setTimeout(this.toggleOptionsList, 200)}
+          onBlur={this.toggleOptionsList}
           onKeyDown={this.onInputKeyDown}
           ref={this.inputRef}
           className="input"
@@ -243,7 +251,7 @@ export class Multiselect extends React.Component {
         {filteredOptions.map((option, index) => (
           <span
             key={option.id}
-            onClick={() => this.selectOption(option, index)}
+            onMouseDown={() => this.selectOption(option, index)}
             className={highlightOptionIndex === index ? 'highlight' : null}
             onMouseOver={() => this.onMouseOverOption(index)}
           >{option.name}</span>
@@ -256,11 +264,13 @@ export class Multiselect extends React.Component {
     const { placeholder } = this.props;
 
     return (
-      <div className={`multiselect-container ${this.props.multiselectContainerClass || ''}`}>
+      <React.Fragment>
         <h2>{placeholder}</h2>
-        {this.renderSelectedOptions()}
-        {this.renderOptionsList()}
-      </div>
+        <div className={`multiselect-container ${this.props.multiselectContainerClass || ''}`}>
+          {this.renderSelectedOptions()}
+          {this.renderOptionsList()}
+        </div>
+      </React.Fragment>
     );
   }
 }
