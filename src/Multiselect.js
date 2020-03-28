@@ -81,10 +81,7 @@ export class Multiselect extends React.Component {
     }
   }
 
-  selectOption = (option, optionIndex, event) => {
-    if (event && typeof event.preventDefault === 'function') {
-      event.preventDefault();
-    }
+  selectOption = (option, optionIndex) => {
     const { filteredOptions, selectedOptions } = this.state;
 
     const newFilteredOptions = [...filteredOptions];
@@ -149,7 +146,7 @@ export class Multiselect extends React.Component {
     }, this.getNewFilteredOptions);
   }
 
-  onMouseOverOption = (index) => {
+  onMouseOverFilteredOption = (index) => {
     const {
       scrollMaxPos
     } = this.state;
@@ -199,7 +196,7 @@ export class Multiselect extends React.Component {
     this.inputRef.current.focus();
   }
 
-  onMouseDownOption = (event, option, index) => {
+  onMouseDownSelectedOption = (event, option, index) => {
     event.preventDefault()
 
     if (event.button === 1) {
@@ -207,10 +204,16 @@ export class Multiselect extends React.Component {
     }
   }
 
-  onClickOptionCloseBtn = (event, option, index) => {
+  onClickSelectedOptionCloseBtn = (event, option, index) => {
     event.stopPropagation();
 
     this.unselectOption(option, index)
+  }
+
+  onMouseDownFilteredOption = (event, option, index) => {
+    event.preventDefault()
+
+    this.selectOption(option, index)
   }
 
   renderSelectedOptions = () => {
@@ -224,10 +227,10 @@ export class Multiselect extends React.Component {
         {selectedOptions.map((option, index) => (
           <span
             key={option.id}
-            onMouseDown={(event) => this.onMouseDownOption(event, option, index)}
+            onMouseDown={(event) => this.onMouseDownSelectedOption(event, option, index)}
           >
             {option.name}
-            <button onClick={(event) => this.onClickOptionCloseBtn(event, option, index)}>✖</button>
+            <button onClick={(event) => this.onClickSelectedOptionCloseBtn(event, option, index)}>✖</button>
           </span>
         ))}
         <input
@@ -256,9 +259,9 @@ export class Multiselect extends React.Component {
         {filteredOptions.map((option, index) => (
           <span
             key={option.id}
-            onMouseDown={(event) => this.selectOption(option, index, event)}
+            onMouseDown={(event) => this.onMouseDownFilteredOption(event, option, index)}
             className={highlightOptionIndex === index ? 'highlight' : null}
-            onMouseOver={() => this.onMouseOverOption(index)}
+            onMouseOver={() => this.onMouseOverFilteredOption(index)}
           >{option.name}</span>
         ))}
       </div>
