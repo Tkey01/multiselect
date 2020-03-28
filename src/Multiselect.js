@@ -96,8 +96,7 @@ export class Multiselect extends React.Component {
         ...selectedOptions,
         option
       ],
-    }, () => {
-      this.inputRef.current.focus();
+      inputValue: ''
     });
   }
 
@@ -144,9 +143,9 @@ export class Multiselect extends React.Component {
     })
   }
 
-  onInputChange = () => {
+  onInputChange = (event) => {
     this.setState({
-      inputValue: this.inputRef.current.value
+      inputValue: event.target.value
     }, this.getNewFilteredOptions);
   }
 
@@ -215,7 +214,7 @@ export class Multiselect extends React.Component {
   }
 
   renderSelectedOptions = () => {
-    const { selectedOptions } = this.state;
+    const { selectedOptions, inputValue } = this.state;
 
     return (
       <div
@@ -237,6 +236,7 @@ export class Multiselect extends React.Component {
           onFocus={this.toggleOptionsList}
           onBlur={this.toggleOptionsList}
           onKeyDown={this.onInputKeyDown}
+          value={inputValue}
           ref={this.inputRef}
           className="input"
         />
