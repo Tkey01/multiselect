@@ -18,30 +18,17 @@ export class Multiselect extends React.Component {
       scrollPos: 0,
       scrollMaxPos: 6
     }
-    
-    this.inputRef = React.createRef();
 
-    this.renderSelectedOptions = this.renderSelectedOptions.bind(this);
-    this.renderOptionsList = this.renderOptionsList.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-    this.getNewFilteredOptions = this.getNewFilteredOptions.bind(this);
-    this.selectOption = this.selectOption.bind(this);
-    this.unselectOption = this.unselectOption.bind(this);
-    this.toggleOptionsList = this.toggleOptionsList.bind(this);
-    this.onInputKeyDown = this.onInputKeyDown.bind(this);
-    this.scrollManaging = this.scrollManaging.bind(this);
-    this.scrollAtOption = this.scrollAtOption.bind(this);
-    this.onMouseOverOption = this.onMouseOverOption.bind(this);
-    this.onClickSelectedOptions = this.onClickSelectedOptions.bind(this);
+    this.inputRef = React.createRef();
   }
 
-  onInputChange() {
+  onInputChange = () => {
     this.setState({
       inputValue: this.inputRef.current.value
     }, this.getNewFilteredOptions);
   }
 
-  toggleOptionsList(event) {
+  toggleOptionsList = (event) => {
     this.setState({
       isOptionsListOpen: !this.state.isOptionsListOpen,
       highlightOptionIndex: 0,
@@ -49,7 +36,7 @@ export class Multiselect extends React.Component {
     });
   }
 
-  scrollAtOption(scrollPos, scrollMaxPos, index) {
+  scrollAtOption = (scrollPos, scrollMaxPos, index) => {
     const element = document.querySelectorAll('.filtered-options span')[index];
 
     if (element) {
@@ -62,7 +49,7 @@ export class Multiselect extends React.Component {
     }
   }
 
-  scrollManaging(event) {
+  scrollManaging = (event) => {
     const {
       scrollMaxPos,
       highlightOptionIndex,
@@ -100,7 +87,7 @@ export class Multiselect extends React.Component {
     }
   }
 
-  onMouseOverOption(index) {
+  onMouseOverOption = (index) => {
     const {
       scrollMaxPos
     } = this.state;
@@ -112,7 +99,7 @@ export class Multiselect extends React.Component {
       } else if (newScrollPos > scrollMaxPos) {
         newScrollPos = scrollMaxPos;
       }
-      
+
       return {
         highlightOptionIndex: index,
         scrollPos: newScrollPos
@@ -120,14 +107,14 @@ export class Multiselect extends React.Component {
     });
   }
 
-  onInputKeyDown(event) {
+  onInputKeyDown = (event) => {
     const {
       highlightOptionIndex,
       filteredOptions,
       selectedOptions,
       inputValue
     } = this.state;
-    
+
     if (event.keyCode === 8 && !inputValue && selectedOptions.length) {
       const lastIndex = selectedOptions.length - 1;
       this.unselectOption(selectedOptions[lastIndex], lastIndex);
@@ -146,7 +133,7 @@ export class Multiselect extends React.Component {
     }
   }
 
-  selectOption(option, optionIndex, event) {
+  selectOption = (option, optionIndex, event) => {
     if (event && typeof event.preventDefault === 'function') {
       event.preventDefault();
     }
@@ -166,7 +153,7 @@ export class Multiselect extends React.Component {
     });
   }
 
-  unselectOption(option, optionIndex) {
+  unselectOption = (option, optionIndex) => {
     const {
       filteredOptions,
       selectedOptions,
@@ -180,14 +167,14 @@ export class Multiselect extends React.Component {
 
     if (option.name.includes(inputValue)) {
       let insertIndex = newFilteredOptions.findIndex((filteredOption) => filteredOption.id > option.id);
-    
+
       if (insertIndex !== -1) {
         newFilteredOptions.splice(insertIndex, 0, { id: option.id, name: option.name });
       } else {
         newFilteredOptions.push({ id: option.id, name: option.name });
       }
     }
-    
+
     this.setState({
       selectedOptions: newSelectedOptions,
       filteredOptions: newFilteredOptions,
@@ -196,11 +183,11 @@ export class Multiselect extends React.Component {
     })
   }
 
-  getNewFilteredOptions() {
+  getNewFilteredOptions = () => {
     const { options, inputValue, selectedOptions } = this.state;
-    
+
     const newFilteredOptions = options
-                                .filter(option => 
+                                .filter(option =>
                                   selectedOptions.findIndex(selectedOption => selectedOption.id === option.id) === -1)
                                 .filter(option => option.name.includes(inputValue));
 
@@ -211,11 +198,11 @@ export class Multiselect extends React.Component {
     })
   }
 
-  onClickSelectedOptions() {
+  onClickSelectedOptions = () => {
     this.inputRef.current.focus();
   }
 
-  renderSelectedOptions() {
+  renderSelectedOptions = () => {
     const { selectedOptions } = this.state;
 
     return (
@@ -242,7 +229,7 @@ export class Multiselect extends React.Component {
     );
   }
 
-  renderOptionsList() {
+  renderOptionsList = () => {
     const {
       filteredOptions,
       isOptionsListOpen,
