@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export class Multiselect extends Component {
   constructor(props) {
@@ -276,14 +277,13 @@ export class Multiselect extends Component {
 
   renderSelectedOptions = () => {
     const { selectedOptions, inputValue } = this.state;
-    const isNotEmpty = Boolean(selectedOptions.length)
 
     return (
       <div
         className="selected-options"
         onClick={this.onClickSelectedOptions}
       >
-        {isNotEmpty && selectedOptions.map((option, index) => (
+        {selectedOptions.map((option, index) => (
           <span
             key={option.id}
             onMouseDown={(event) => this.onMouseDownSelectedOption(event, option, index)}
@@ -313,14 +313,12 @@ export class Multiselect extends Component {
       highlightOptionIndex
     } = this.state;
 
-    const isNotEmpty = Boolean(filteredOptions.length)
-
     return isOptionsListOpen && (
       <div
         className="filtered-options"
         onMouseMove={this.onMouseMoveFilteredOptions}
       >
-        {isNotEmpty && filteredOptions.map((option, index) => (
+        {filteredOptions.map((option, index) => (
           <span
             key={option.id}
             onMouseDown={(event) => this.onMouseDownFilteredOption(event, option)}
@@ -338,11 +336,24 @@ export class Multiselect extends Component {
     return (
       <React.Fragment>
         <h2>{placeholder}</h2>
-        <div className={`multiselect-container ${this.props.multiselectContainerClass || ''}`}>
+        <div className={`multiselect-container ${this.props.containerClassName || ''}`}>
           {this.renderSelectedOptions()}
           {this.renderFilteredOptions()}
         </div>
       </React.Fragment>
     );
   }
+}
+
+Multiselect.propTypes = {
+  containerClassName: PropTypes.string,
+  placeholder: PropTypes.string.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onChange: PropTypes.func.isRequired
+}
+
+Multiselect.defaultProps = {
+  placeholder: 'Multiselect dropdown',
+  options: [],
+  onChange: () => {}
 }

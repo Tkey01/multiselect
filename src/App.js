@@ -8,14 +8,14 @@ function App() {
   return (
     <div style={{ width: '400px', margin: '200px auto' }}>
       <Multiselect
-        multiselectContainerClass={'top'}
+        containerClassName={'top'}
         placeholder='Выберите страны'
         options={countries}
         onChange={(selectedOptions) => { console.log('Selected countries - ', selectedOptions)}}
       />
 
       <Multiselect
-        multiselectContainerClass={'bottom'}
+        containerClassName={'bottom'}
         placeholder='Рандомные опции'
         options={randomOptions}
         onChange={(selectedOptions) => { console.log('Selected random options - ', selectedOptions)}}
