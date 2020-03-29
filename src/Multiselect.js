@@ -17,7 +17,7 @@ export class Multiselect extends React.Component {
       highlightOptionIndex: 0,
       scrollPos: 0,
       scrollMaxPos: 6,
-      isScrolling: false
+      isScrollingByKeyboard: false
     }
 
     this.inputRef = React.createRef();
@@ -62,7 +62,7 @@ export class Multiselect extends React.Component {
           return {
             highlightOptionIndex,
             scrollPos,
-            isScrolling: true
+            isScrollingByKeyboard: true
           };
         });
       }
@@ -77,7 +77,7 @@ export class Multiselect extends React.Component {
           return {
             highlightOptionIndex,
             scrollPos,
-            isScrolling: true
+            isScrollingByKeyboard: true
           };
         });
       }
@@ -85,19 +85,15 @@ export class Multiselect extends React.Component {
   }
 
   selectOption = (option, optionIndex) => {
-    const { filteredOptions, selectedOptions } = this.state;
-
-    const newFilteredOptions = [...filteredOptions];
-    newFilteredOptions.splice(optionIndex, 1);
+    const { selectedOptions } = this.state;
 
     this.setState({
-      filteredOptions: newFilteredOptions,
       selectedOptions: [
         ...selectedOptions,
         option
       ],
       inputValue: ''
-    });
+    }, this.getNewFilteredOptions);
   }
 
   unselectOption = (option, optionIndex) => {
@@ -152,10 +148,10 @@ export class Multiselect extends React.Component {
   onMouseOverFilteredOption = (index) => {
     const {
       scrollMaxPos,
-      isScrolling
+      isScrollingByKeyboard
     } = this.state;
 
-    if (isScrolling) return
+    if (isScrollingByKeyboard) return
 
     this.setState(previousState => {
       let newScrollPos = previousState.scrollPos + (index - previousState.highlightOptionIndex);
@@ -223,9 +219,12 @@ export class Multiselect extends React.Component {
   }
 
   onMouseMoveFilteredOptions = () => {
-    this.setState({
-      isScrolling: false
-    })
+    const { isScrollingByKeyboard } = this.state
+    if (isScrollingByKeyboard) {
+      this.setState({
+        isScrollingByKeyboard: false
+      })
+    }
   }
 
   renderSelectedOptions = () => {
