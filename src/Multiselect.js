@@ -16,7 +16,8 @@ export class Multiselect extends React.Component {
       inputValue: '',
       highlightOptionIndex: 0,
       scrollPos: 0,
-      scrollMaxPos: 6
+      scrollMaxPos: 6,
+      isScrolling: false
     }
 
     this.inputRef = React.createRef();
@@ -60,7 +61,8 @@ export class Multiselect extends React.Component {
 
           return {
             highlightOptionIndex,
-            scrollPos
+            scrollPos,
+            isScrolling: true
           };
         });
       }
@@ -74,7 +76,8 @@ export class Multiselect extends React.Component {
 
           return {
             highlightOptionIndex,
-            scrollPos
+            scrollPos,
+            isScrolling: true
           };
         });
       }
@@ -148,8 +151,11 @@ export class Multiselect extends React.Component {
 
   onMouseOverFilteredOption = (index) => {
     const {
-      scrollMaxPos
+      scrollMaxPos,
+      isScrolling
     } = this.state;
+
+    if (isScrolling) return
 
     this.setState(previousState => {
       let newScrollPos = previousState.scrollPos + (index - previousState.highlightOptionIndex);
@@ -216,6 +222,12 @@ export class Multiselect extends React.Component {
     this.selectOption(option, index)
   }
 
+  onMouseMoveFilteredOptions = () => {
+    this.setState({
+      isScrolling: false
+    })
+  }
+
   renderSelectedOptions = () => {
     const { selectedOptions, inputValue } = this.state;
 
@@ -247,7 +259,7 @@ export class Multiselect extends React.Component {
     );
   }
 
-  renderOptionsList = () => {
+  renderFilteredOptions = () => {
     const {
       filteredOptions,
       isOptionsListOpen,
@@ -255,7 +267,10 @@ export class Multiselect extends React.Component {
     } = this.state;
 
     return isOptionsListOpen && (
-      <div className="filtered-options">
+      <div
+        className="filtered-options"
+        onMouseMove={this.onMouseMoveFilteredOptions}
+      >
         {filteredOptions.map((option, index) => (
           <span
             key={option.id}
@@ -276,7 +291,7 @@ export class Multiselect extends React.Component {
         <h2>{placeholder}</h2>
         <div className={`multiselect-container ${this.props.multiselectContainerClass || ''}`}>
           {this.renderSelectedOptions()}
-          {this.renderOptionsList()}
+          {this.renderFilteredOptions()}
         </div>
       </React.Fragment>
     );
