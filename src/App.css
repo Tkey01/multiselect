@@ -7,6 +7,11 @@ html, body {
   padding: 0;
 }
 
+.app-wrapper {
+  width: 400px;
+  margin: 200px auto;
+}
+
 .multiselect-container {
   width: 400px;
   outline: 1px solid #5f6caf;
@@ -15,7 +20,7 @@ html, body {
   position: relative;
 }
 
-.selected-options span {
+.selected-options__option {
   display: inline-block;
   border: 1px solid #0f4c75;
   background-color: #3282b8;
@@ -26,7 +31,7 @@ html, body {
   position: relative;
 }
 
-.selected-options span button {
+.selected-options__option button {
   position: absolute;
   right: 0px;
   top: 7px;
@@ -36,8 +41,18 @@ html, body {
   color: #a2c3da;
 }
 
-.selected-options span button:hover {
+.selected-options__option button:hover {
   color: #fff;
+}
+
+.selected-options__text-field {
+  width: 150px;
+  height: 30px;
+  font-size: 16px;
+  margin-top: 5px;
+  margin-left: 5px;
+  border: none;
+  outline: none;
 }
 
 .filtered-options {
@@ -53,7 +68,7 @@ html, body {
   z-index: 1;
 }
 
-.filtered-options span {
+.filtered-options__option {
   display: block;
   padding: 5px;
   border-bottom: 1px solid #cee6f7;
@@ -62,21 +77,11 @@ html, body {
   cursor: pointer;
 }
 
-.filtered-options span:last-of-type {
+.filtered-options__option:last-of-type {
   border: none;
 }
 
-.filtered-options span.highlight {
+.filtered-options__option.highlight {
   background: #3282b8;
   color: #fff;
-}
-
-.input {
-  width: 150px;
-  height: 30px;
-  font-size: 16px;
-  margin-top: 5px;
-  margin-left: 5px;
-  border: none;
-  outline: none;
 }

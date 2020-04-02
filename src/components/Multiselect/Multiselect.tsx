@@ -1,5 +1,5 @@
 import React, {
-  Component,
+  PureComponent,
   KeyboardEvent,
   MouseEvent,
   ChangeEvent,
@@ -16,7 +16,7 @@ import {
   TGetNewFilteredOptionsParams
 } from './Multiselect.types'
 
-export class Multiselect extends Component<TMultiselectProps, TMultiselectState> {
+export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectState> {
   private inputRef: RefObject<HTMLInputElement>;
 
   constructor(props: TMultiselectProps) {
@@ -310,6 +310,7 @@ export class Multiselect extends Component<TMultiselectProps, TMultiselectState>
           <span
             key={option.id}
             onMouseDown={(event) => this.onMouseDownSelectedOption(event, option, index)}
+            className="selected-options__option"
           >
             {option.name}
             <button onClick={(event) => this.onClickSelectedOptionCloseBtn(event, option, index)}>✖</button>
@@ -323,7 +324,7 @@ export class Multiselect extends Component<TMultiselectProps, TMultiselectState>
           onKeyDown={this.onInputKeyDown}
           value={inputValue}
           ref={this.inputRef}
-          className="input"
+          className="selected-options__text-field"
         />
       </div>
     );
@@ -345,7 +346,10 @@ export class Multiselect extends Component<TMultiselectProps, TMultiselectState>
           <span
             key={option.id}
             onMouseDown={(event) => this.onMouseDownFilteredOption(event, option)}
-            className={highlightOptionIndex === index ? 'highlight' : undefined}
+            className={`
+              filtered-options__option
+              ${highlightOptionIndex === index ? 'highlight' : ''}
+            `}
             onMouseOver={() => this.onMouseOverFilteredOption(index)}
           >{option.name}</span>
         ))}

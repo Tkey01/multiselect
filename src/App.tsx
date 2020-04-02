@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import { Multiselect } from './components/Multiselect/Multiselect';
+import { Multiselect } from './components/Multiselect';
 
 import { countries, randomOptions } from './mocks/options'
 
 export const App = () => (
-  <div style={{ width: '400px', margin: '200px auto' }}>
+  <div className="app-wrapper">
     <Multiselect
       containerClassName={'top'}
       placeholder='Выберите страны'
