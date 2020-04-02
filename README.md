@@ -1,6 +1,7 @@
 ## Тестовое задание Dropdown Multiselect
 
 - Сборка на create-react-app
+- Посмотреть можно тут: https://tkey01.github.io/multiselect
 
 ### Для установки сборки выполните следующие шаги:
 
