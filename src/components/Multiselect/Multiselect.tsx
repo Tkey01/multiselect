@@ -203,8 +203,6 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
       }
     }
 
-    console.log(newFilteredOptions)
-
     return newFilteredOptions
   }
 
