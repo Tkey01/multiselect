@@ -1,8 +1,25 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  Component,
+  KeyboardEvent,
+  MouseEvent,
+  ChangeEvent,
+  ReactNode,
+  RefObject
+} from 'react';
 
-export class Multiselect extends Component {
-  constructor(props) {
+import {
+  TMultiselectProps,
+  TMultiselectState,
+  TMultiselectOption,
+  TMultiselectOptions,
+  TGetNewSelectedOptionsParams,
+  TGetNewFilteredOptionsParams
+} from './Multiselect.types'
+
+export class Multiselect extends Component<TMultiselectProps, TMultiselectState> {
+  private inputRef: RefObject<HTMLInputElement>;
+
+  constructor(props: TMultiselectProps) {
     super(props);
 
     const { options } = this.props;
@@ -21,7 +38,13 @@ export class Multiselect extends Component {
       isScrollingByKeyboard: false
     }
 
-    this.inputRef = React.createRef();
+    this.inputRef = React.createRef<HTMLInputElement>();
+  }
+
+  static defaultProps = {
+    placeholder: 'Multiselect dropdown',
+    options: [],
+    onChange: () => {}
   }
 
   getResetScrollState = () => ({
@@ -29,14 +52,14 @@ export class Multiselect extends Component {
     scrollPos: 0
   })
 
-  toggleOptionsList = (event) => {
+  toggleOptionsList = () => {
     this.setState(prevState => ({
       isOptionsListOpen: !prevState.isOptionsListOpen,
       ...this.getResetScrollState()
     }))
   }
 
-  scrollAtOption = (scrollPos, index) => {
+  scrollAtOption = (scrollPos: number, index: number): void => {
     const element = document.querySelectorAll('.filtered-options span')[index];
     const { scrollMaxPos } = this.state
 
@@ -50,7 +73,7 @@ export class Multiselect extends Component {
     }
   }
 
-  scrollManaging = (event) => {
+  scrollManaging = (event: KeyboardEvent) => {
     const {
       scrollMaxPos,
       highlightOptionIndex,
@@ -93,16 +116,14 @@ export class Multiselect extends Component {
     }
   }
 
-  getArrayOfValues = (options) => options.map(option => option.name)
+  getArrayOfValues = (options: TMultiselectOptions): string[] => options.map(option => option.name)
 
-  selectOption = (newOption) => {
-    const { inputValue } = this.state;
-
+  selectOption = (newOption: TMultiselectOption) => {
     const newSelectedOptions = this.getNewSelectedOptions({ type: 1, newOption })
 
     this.setState({
       selectedOptions: newSelectedOptions,
-      filteredOptions: this.getNewFilteredOptions({ type: 1, inputValue, changeableOption: newOption }),
+      filteredOptions: this.getNewFilteredOptions({ type: 1, changeableOption: newOption }),
       inputValue: '',
       ...this.getResetScrollState()
     });
@@ -113,7 +134,7 @@ export class Multiselect extends Component {
     this.props.onChange(arrayOfValues)
   }
 
-  unselectOption = (option, deletedIndex) => {
+  unselectOption = (option: TMultiselectOption, deletedIndex: number): void => {
     const { inputValue } = this.state;
 
     const newSelectedOptions = this.getNewSelectedOptions({ type: 2, deletedIndex })
@@ -127,51 +148,51 @@ export class Multiselect extends Component {
     this.props.onChange(arrayOfValues)
   }
 
-  getNewSelectedOptions = ({ type, deletedIndex, newOption }) => {
+  getNewSelectedOptions = (params: TGetNewSelectedOptionsParams): TMultiselectOptions => {
     const { selectedOptions } = this.state
 
     let newSelectedOptions = [...selectedOptions]
 
-    // В случае добавления опции в список (параметр deletedIndex не нужен, добавляем в конец массива)
-    if (type === 1) {
-      newSelectedOptions.push(newOption)
+    // В случае добавления опции в список (параметр deletedIndex не нужен)
+    if (params.type === 1) {
+      newSelectedOptions.push(params.newOption)
     }
     // В случае удаления опции из списка выбранных
-    else if (type === 2) {
-      newSelectedOptions.splice(deletedIndex, 1);
+    else if (params.type === 2) {
+      newSelectedOptions.splice(params.deletedIndex, 1);
     }
 
     return newSelectedOptions
   }
 
-  getNewFilteredOptions = ({ type, inputValue, changeableOption }) => {
+  getNewFilteredOptions = (params: TGetNewFilteredOptionsParams): TMultiselectOptions => {
     const { options, filteredOptions, selectedOptions } = this.state;
-    let newFilteredOptions = []
+    let newFilteredOptions: TMultiselectOptions = []
 
     // В случае добавления опции в список выбранных
-    if (type === 1) {
+    if (params.type === 1) {
       newFilteredOptions = filteredOptions
-        .filter(option => option.id !== changeableOption.id)
+        .filter(option => option.id !== params.changeableOption.id)
     }
-    // В случае изменения значения инпута (3-й параметр не нужен)
-    else if (type === 2) {
+    // В случае изменения значения инпута (параметр changeableOption не нужен)
+    else if (params.type === 2) {
       let newSelectedOptionsIds = selectedOptions.map(option => option.id)
 
       newFilteredOptions = options
-        .filter(option => option.name.toUpperCase().includes(inputValue.toUpperCase()))
+        .filter(option => option.name.toUpperCase().includes(params.inputValue.toUpperCase()))
         .filter(option => !newSelectedOptionsIds.includes(option.id))
     }
     // В случае удаления опции из списка выбранных
-    else if (type === 3) {
+    else if (params.type === 3) {
       newFilteredOptions = [...filteredOptions];
 
-      if (changeableOption.name.includes(inputValue)) {
-        let insertIndex = newFilteredOptions.findIndex((filteredOption) => filteredOption.id > changeableOption.id);
+      if (params.changeableOption.name.includes(params.inputValue)) {
+        let insertIndex = newFilteredOptions.findIndex((filteredOption) => filteredOption.id > params.changeableOption.id);
 
         if (insertIndex !== -1) {
-          newFilteredOptions.splice(insertIndex, 0, { id: changeableOption.id, name: changeableOption.name });
+          newFilteredOptions.splice(insertIndex, 0, { id: params.changeableOption.id, name: params.changeableOption.name });
         } else {
-          newFilteredOptions.push({ id: changeableOption.id, name: changeableOption.name });
+          newFilteredOptions.push({ id: params.changeableOption.id, name: params.changeableOption.name });
         }
       }
     }
@@ -179,7 +200,7 @@ export class Multiselect extends Component {
     return newFilteredOptions
   }
 
-  onInputChange = (event) => {
+  onInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const inputValue = event.target.value
 
     this.setState({
@@ -191,7 +212,7 @@ export class Multiselect extends Component {
     this.scrollAtOption(0, 0)
   }
 
-  onMouseOverFilteredOption = (index) => {
+  onMouseOverFilteredOption = (index: number): void => {
     const {
       scrollMaxPos,
       isScrollingByKeyboard
@@ -214,7 +235,7 @@ export class Multiselect extends Component {
     });
   }
 
-  onInputKeyDown = (event) => {
+  onInputKeyDown = (event: KeyboardEvent): void => {
     const {
       highlightOptionIndex,
       filteredOptions,
@@ -227,7 +248,7 @@ export class Multiselect extends Component {
       this.unselectOption(selectedOptions[lastIndex], lastIndex);
     }
 
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && this.inputRef && this.inputRef.current) {
       this.inputRef.current.blur();
     }
 
@@ -238,15 +259,17 @@ export class Multiselect extends Component {
     }
 
     if (event.key === "Enter" && filteredOptions.length) {
-      this.selectOption(filteredOptions[highlightOptionIndex], highlightOptionIndex);
+      this.selectOption(filteredOptions[highlightOptionIndex]);
     }
   }
 
-  onClickSelectedOptions = () => {
-    this.inputRef.current.focus();
+  onClickSelectedOptions = (): void => {
+    if (this.inputRef && this.inputRef.current) {
+      this.inputRef.current.focus();
+    }
   }
 
-  onMouseDownSelectedOption = (event, option, index) => {
+  onMouseDownSelectedOption = (event: MouseEvent, option: TMultiselectOption, index: number): void => {
     event.preventDefault()
 
     if (event.button === 1) {
@@ -254,19 +277,19 @@ export class Multiselect extends Component {
     }
   }
 
-  onClickSelectedOptionCloseBtn = (event, option, index) => {
+  onClickSelectedOptionCloseBtn = (event: MouseEvent, option: TMultiselectOption, index: number): void => {
     event.stopPropagation();
 
     this.unselectOption(option, index)
   }
 
-  onMouseDownFilteredOption = (event, option) => {
+  onMouseDownFilteredOption = (event: MouseEvent, option: TMultiselectOption): void => {
     event.preventDefault()
 
     this.selectOption(option)
   }
 
-  onMouseMoveFilteredOptions = () => {
+  onMouseMoveFilteredOptions = (): void => {
     const { isScrollingByKeyboard } = this.state
     if (isScrollingByKeyboard) {
       this.setState({
@@ -275,7 +298,7 @@ export class Multiselect extends Component {
     }
   }
 
-  renderSelectedOptions = () => {
+  renderSelectedOptions = (): ReactNode => {
     const { selectedOptions, inputValue } = this.state;
 
     return (
@@ -306,7 +329,7 @@ export class Multiselect extends Component {
     );
   }
 
-  renderFilteredOptions = () => {
+  renderFilteredOptions = (): ReactNode => {
     const {
       filteredOptions,
       isOptionsListOpen,
@@ -322,7 +345,7 @@ export class Multiselect extends Component {
           <span
             key={option.id}
             onMouseDown={(event) => this.onMouseDownFilteredOption(event, option)}
-            className={highlightOptionIndex === index ? 'highlight' : null}
+            className={highlightOptionIndex === index ? 'highlight' : undefined}
             onMouseOver={() => this.onMouseOverFilteredOption(index)}
           >{option.name}</span>
         ))}
@@ -330,7 +353,7 @@ export class Multiselect extends Component {
     );
   }
 
-  render() {
+  render(): ReactNode {
     const { placeholder } = this.props;
 
     return (
@@ -343,17 +366,4 @@ export class Multiselect extends Component {
       </React.Fragment>
     );
   }
-}
-
-Multiselect.propTypes = {
-  containerClassName: PropTypes.string,
-  placeholder: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onChange: PropTypes.func.isRequired
-}
-
-Multiselect.defaultProps = {
-  placeholder: 'Multiselect dropdown',
-  options: [],
-  onChange: () => {}
 }
