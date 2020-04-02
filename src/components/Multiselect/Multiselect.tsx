@@ -165,22 +165,28 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
     return newSelectedOptions
   }
 
+  getOptionsWithoutSelected = (): TMultiselectOptions => {
+    const { selectedOptions, options } = this.state
+
+    let selectedOptionsIds = selectedOptions.map(option => option.id)
+    const res = options.filter(option => !selectedOptionsIds.includes(option.id))
+
+    return res
+  }
+
   getNewFilteredOptions = (params: TGetNewFilteredOptionsParams): TMultiselectOptions => {
-    const { options, filteredOptions, selectedOptions } = this.state;
+    const { filteredOptions } = this.state;
     let newFilteredOptions: TMultiselectOptions = []
 
     // В случае добавления опции в список выбранных
     if (params.type === 1) {
-      newFilteredOptions = filteredOptions
+      newFilteredOptions = this.getOptionsWithoutSelected()
         .filter(option => option.id !== params.changeableOption.id)
     }
     // В случае изменения значения инпута (параметр changeableOption не нужен)
     else if (params.type === 2) {
-      let newSelectedOptionsIds = selectedOptions.map(option => option.id)
-
-      newFilteredOptions = options
+      newFilteredOptions = this.getOptionsWithoutSelected()
         .filter(option => option.name.toUpperCase().includes(params.inputValue.toUpperCase()))
-        .filter(option => !newSelectedOptionsIds.includes(option.id))
     }
     // В случае удаления опции из списка выбранных
     else if (params.type === 3) {
@@ -196,6 +202,8 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
         }
       }
     }
+
+    console.log(newFilteredOptions)
 
     return newFilteredOptions
   }
