@@ -55,7 +55,6 @@ export const FilteredOption = styled.span<{ isSelected: boolean }>`
 
   &:last-of-type {
     border: none;
-    color: red;
   }
 `
 
