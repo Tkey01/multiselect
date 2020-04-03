@@ -44,6 +44,12 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
       inputValue: '',
       highlightOptionIndex: 0,
       scrollPos: 0,
+      /**
+       * scrollMaxPos - это то, сколько элементов вмещается в
+       * контейнер с результатами поиска
+       *
+       * TODO: Подумать как это можно сделать красивее, без хардкода
+       */
       scrollMaxPos: 6,
       isScrollingByKeyboard: false
     }
@@ -70,6 +76,11 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
     }))
   }
 
+  /**
+   * scrollManaging, scrollAtOption -
+   * эти 2 метода нужны для скроллинга по результатам поиска
+   * с помощью стрелочек на клавиатуре
+   */
   scrollAtOption = (scrollPos: number, index: number): void => {
     if (this.filteredOptionsRef && this.filteredOptionsRef.current) {
       const element = this.filteredOptionsRef.current.querySelectorAll('span')[index];
@@ -128,6 +139,11 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
       }
     }
   }
+
+  /**
+   * После каждого изменения выбранных опций,
+   * мы прокидываем наружу массив из их значений
+   */
 
   getArrayOfValues = (options: TMultiselectOptions): string[] => options.map(option => option.name)
 
@@ -219,7 +235,7 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
     return newFilteredOptions
   }
 
-  onInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  onTextFieldChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const inputValue = event.target.value
 
     this.setState({
@@ -231,30 +247,7 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
     this.scrollAtOption(0, 0)
   }
 
-  onMouseOverFilteredOption = (index: number): void => {
-    const {
-      scrollMaxPos,
-      isScrollingByKeyboard
-    } = this.state;
-
-    if (isScrollingByKeyboard) return
-
-    this.setState(previousState => {
-      let newScrollPos = previousState.scrollPos + (index - previousState.highlightOptionIndex);
-      if (newScrollPos < 0) {
-        newScrollPos = 0;
-      } else if (newScrollPos > scrollMaxPos) {
-        newScrollPos = scrollMaxPos;
-      }
-
-      return {
-        highlightOptionIndex: index,
-        scrollPos: newScrollPos
-      }
-    });
-  }
-
-  onInputKeyDown = (event: KeyboardEvent): void => {
+  onTextFieldKeyDown = (event: KeyboardEvent): void => {
     const {
       highlightOptionIndex,
       filteredOptions,
@@ -302,12 +295,6 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
     this.unselectOption(option, index)
   }
 
-  onMouseDownFilteredOption = (event: MouseEvent, option: TMultiselectOption): void => {
-    event.preventDefault()
-
-    this.selectOption(option)
-  }
-
   onMouseMoveFilteredOptions = (): void => {
     const { isScrollingByKeyboard } = this.state
     if (isScrollingByKeyboard) {
@@ -315,6 +302,35 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
         isScrollingByKeyboard: false
       })
     }
+  }
+
+  onMouseOverFilteredOption = (index: number): void => {
+    const {
+      scrollMaxPos,
+      isScrollingByKeyboard
+    } = this.state;
+
+    if (isScrollingByKeyboard) return
+
+    this.setState(previousState => {
+      let newScrollPos = previousState.scrollPos + (index - previousState.highlightOptionIndex);
+      if (newScrollPos < 0) {
+        newScrollPos = 0;
+      } else if (newScrollPos > scrollMaxPos) {
+        newScrollPos = scrollMaxPos;
+      }
+
+      return {
+        highlightOptionIndex: index,
+        scrollPos: newScrollPos
+      }
+    });
+  }
+
+  onMouseDownFilteredOption = (event: MouseEvent, option: TMultiselectOption): void => {
+    event.preventDefault()
+
+    this.selectOption(option)
   }
 
   renderSelectedOptions = (): ReactNode => {
@@ -339,10 +355,10 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
         ))}
         <TextField
           type="text"
-          onChange={this.onInputChange}
+          onChange={this.onTextFieldChange}
           onFocus={this.toggleOptionsList}
           onBlur={this.toggleOptionsList}
-          onKeyDown={this.onInputKeyDown}
+          onKeyDown={this.onTextFieldKeyDown}
           value={inputValue}
           ref={this.inputRef}
         />
