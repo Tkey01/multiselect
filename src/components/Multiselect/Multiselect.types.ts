@@ -1,5 +1,4 @@
 export type TMultiselectProps = {
-  containerClassName: string,
   placeholder: string,
   options: string[],
   onChange: (arg0: string[]) => void

@@ -10,13 +10,11 @@ export const App = () => (
     <GlobalStyle />
     <AppWrapper>
       <Multiselect
-        containerClassName={'top'}
         placeholder='Выберите страны'
         options={countries}
         onChange={(selectedOptions) => { console.log('Selected countries - ', selectedOptions) }}
       />
       <Multiselect
-        containerClassName={'bottom'}
         placeholder='Рандомные опции'
         options={randomOptions}
         onChange={(selectedOptions) => { console.log('Selected random options - ', selectedOptions) }}
