@@ -1,26 +1,14 @@
-*, *:before, *:after {
-  box-sizing: border-box;
-}
+import styled from 'styled-components'
 
-html, body {
-  margin: 0;
-  padding: 0;
-}
-
-.app-wrapper {
-  width: 400px;
-  margin: 200px auto;
-}
-
-.multiselect-container {
+export const MultiselectContainer = styled.div`
   width: 400px;
   outline: 1px solid #5f6caf;
   margin: 0 0 40px 0;
   padding: 5px;
   position: relative;
-}
+`
 
-.selected-options__option {
+export const SelectedOption = styled.span`
   display: inline-block;
   border: 1px solid #0f4c75;
   background-color: #3282b8;
@@ -29,9 +17,9 @@ html, body {
   border-radius: 5px;
   color: #fff;
   position: relative;
-}
+`
 
-.selected-options__option button {
+export const CloseBtn = styled.button`
   position: absolute;
   right: 0px;
   top: 7px;
@@ -39,23 +27,12 @@ html, body {
   border: none;
   cursor: pointer;
   color: #a2c3da;
-}
+  &:hover {
+    color: #fff
+  }
+`
 
-.selected-options__option button:hover {
-  color: #fff;
-}
-
-.selected-options__text-field {
-  width: 150px;
-  height: 30px;
-  font-size: 16px;
-  margin-top: 5px;
-  margin-left: 5px;
-  border: none;
-  outline: none;
-}
-
-.filtered-options {
+export const FilteredOptions = styled.div`
   display: block;
   position: absolute;
   width: 100%;
@@ -66,22 +43,28 @@ html, body {
   overflow-x: hidden;
   border: 1px solid #0f4c75;
   z-index: 1;
-}
+`
 
-.filtered-options__option {
+export const FilteredOption = styled.span<{ isSelected: boolean }>`
   display: block;
   padding: 5px;
   border-bottom: 1px solid #cee6f7;
-  background-color: #fff;
-  color: #333;
+  background-color: ${props => props.isSelected ? '#3282b8' : '#fff'};
+  color: ${props => props.isSelected ? '#fff' : '#333'};
   cursor: pointer;
-}
 
-.filtered-options__option:last-of-type {
+  &:last-of-type {
+    border: none;
+    color: red;
+  }
+`
+
+export const TextField = styled.input`
+  width: 150px;
+  height: 30px;
+  font-size: 16px;
+  margin-top: 5px;
+  margin-left: 5px;
   border: none;
-}
-
-.filtered-options__option.highlight {
-  background: #3282b8;
-  color: #fff;
-}
+  outline: none;
+`

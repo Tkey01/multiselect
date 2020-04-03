@@ -16,8 +16,18 @@ import {
   TGetNewFilteredOptionsParams
 } from './Multiselect.types'
 
+import {
+  MultiselectContainer,
+  TextField,
+  FilteredOption,
+  FilteredOptions,
+  SelectedOption,
+  CloseBtn
+} from './Multiselect.styled'
+
 export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectState> {
   private inputRef: RefObject<HTMLInputElement>;
+  private filteredOptionsRef: RefObject<HTMLDivElement>;
 
   constructor(props: TMultiselectProps) {
     super(props);
@@ -39,6 +49,7 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
     }
 
     this.inputRef = React.createRef<HTMLInputElement>();
+    this.filteredOptionsRef = React.createRef<HTMLDivElement>();
   }
 
   static defaultProps = {
@@ -60,15 +71,17 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
   }
 
   scrollAtOption = (scrollPos: number, index: number): void => {
-    const element = document.querySelectorAll('.filtered-options span')[index];
-    const { scrollMaxPos } = this.state
+    if (this.filteredOptionsRef && this.filteredOptionsRef.current) {
+      const element = this.filteredOptionsRef.current.querySelectorAll('span')[index];
+      const { scrollMaxPos } = this.state
 
-    if (element) {
-      if (scrollPos === 0) {
-        element.scrollIntoView(true);
-      }
-      if (scrollPos === scrollMaxPos) {
-        element.scrollIntoView(false);
+      if (element) {
+        if (scrollPos === 0) {
+          element.scrollIntoView(true);
+        }
+        if (scrollPos === scrollMaxPos) {
+          element.scrollIntoView(false);
+        }
       }
     }
   }
@@ -309,20 +322,22 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
 
     return (
       <div
-        className="selected-options"
         onClick={this.onClickSelectedOptions}
       >
         {selectedOptions.map((option, index) => (
-          <span
+          <SelectedOption
             key={option.id}
             onMouseDown={(event) => this.onMouseDownSelectedOption(event, option, index)}
-            className="selected-options__option"
           >
             {option.name}
-            <button onClick={(event) => this.onClickSelectedOptionCloseBtn(event, option, index)}>✖</button>
-          </span>
+            <CloseBtn
+              onClick={(event) => this.onClickSelectedOptionCloseBtn(event, option, index)}
+            >
+              ✖
+            </CloseBtn>
+          </SelectedOption>
         ))}
-        <input
+        <TextField
           type="text"
           onChange={this.onInputChange}
           onFocus={this.toggleOptionsList}
@@ -330,7 +345,6 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
           onKeyDown={this.onInputKeyDown}
           value={inputValue}
           ref={this.inputRef}
-          className="selected-options__text-field"
         />
       </div>
     );
@@ -344,22 +358,21 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
     } = this.state;
 
     return isOptionsListOpen && (
-      <div
-        className="filtered-options"
+      <FilteredOptions
         onMouseMove={this.onMouseMoveFilteredOptions}
+        ref={this.filteredOptionsRef}
       >
         {filteredOptions.map((option, index) => (
-          <span
+          <FilteredOption
             key={option.id}
             onMouseDown={(event) => this.onMouseDownFilteredOption(event, option)}
-            className={`
-              filtered-options__option
-              ${highlightOptionIndex === index ? 'highlight' : ''}
-            `}
+            isSelected={highlightOptionIndex === index}
             onMouseOver={() => this.onMouseOverFilteredOption(index)}
-          >{option.name}</span>
+          >
+            {option.name}
+          </FilteredOption>
         ))}
-      </div>
+      </FilteredOptions>
     );
   }
 
@@ -369,10 +382,10 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
     return (
       <React.Fragment>
         <h2>{placeholder}</h2>
-        <div className={`multiselect-container ${this.props.containerClassName || ''}`}>
+        <MultiselectContainer>
           {this.renderSelectedOptions()}
           {this.renderFilteredOptions()}
-        </div>
+        </MultiselectContainer>
       </React.Fragment>
     );
   }
