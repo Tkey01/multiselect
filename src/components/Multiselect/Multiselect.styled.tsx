@@ -45,12 +45,12 @@ export const FilteredOptions = styled.div`
   z-index: 1;
 `
 
-export const FilteredOption = styled.span<{ isSelected: boolean }>`
+export const FilteredOption = styled.span<{ isHighlight: boolean }>`
   display: block;
   padding: 5px;
   border-bottom: 1px solid #cee6f7;
-  background-color: ${props => props.isSelected ? '#3282b8' : '#fff'};
-  color: ${props => props.isSelected ? '#fff' : '#333'};
+  background-color: ${props => props.isHighlight ? '#3282b8' : '#fff'};
+  color: ${props => props.isHighlight ? '#fff' : '#333'};
   cursor: pointer;
 
   &:last-of-type {

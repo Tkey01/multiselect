@@ -366,7 +366,7 @@ export class Multiselect extends PureComponent<TMultiselectProps, TMultiselectSt
           <FilteredOption
             key={option.id}
             onMouseDown={(event) => this.onMouseDownFilteredOption(event, option)}
-            isSelected={highlightOptionIndex === index}
+            isHighlight={highlightOptionIndex === index}
             onMouseOver={() => this.onMouseOverFilteredOption(index)}
           >
             {option.name}
