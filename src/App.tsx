@@ -21,4 +21,4 @@ export const App = () => (
       />
     </AppWrapper>
   </Fragment>
-);
+)
